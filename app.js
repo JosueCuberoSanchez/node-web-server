@@ -1,11 +1,37 @@
 const express = require('express');
 const hbs = require('hbs');
+const fs = require('fs');
 
 const app = express();
 
+// Handlebars
+hbs.registerPartials(`${__dirname}/views/partials`);
+hbs.registerHelper('getCurrentYear', () => {
+    return new Date().getFullYear();
+});
+hbs.registerHelper('toUpperCase', (text) => {
+    return text.toUpperCase();
+});
 app.set('viewEngine', 'hbs');
-app.use(express.static(__dirname + '/public')); // static files directory
 
+// Static files
+app.use(express.static(`${__dirname}/public`)); // static files directory
+
+// Middleware: middlewares are called on the same order I'm defining them
+app.use((req, res, next) => { // if I dont call next, the app is going to stop
+    var now = new Date().toString();
+    var log = `${now} doing a ${req.method} on ${req.url}\n`;
+    fs.appendFile('server.log', log, (err) => {
+        if(err) {
+            console.log('Unable to append to log');
+            res.render('error.hbs');
+        }
+    });
+    console.log(log);
+    next();
+});
+
+// Routes
 app.get('/', (req, res) => { // HTTP requests handler
     res.send('Visit /text/, /html/ or /json/'); // send a string to the client that made the request
 });
@@ -38,11 +64,11 @@ app.get('/json/', (req, res) => {
 
 app.get('/about/', (req, res) => { // hbs template
     res.render('about.hbs', { // inject parameters
-        name: 'Josue',
-        year: new Date().getFullYear()
+        name: 'Josue'
     });
 });
 
+// Listen
 app.listen(3000, () => {
     console.log('Server is up on port 3000');
 });

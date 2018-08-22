@@ -1,0 +1,5 @@
+To generate SSH keys:
+1. ssh-keygen -t rsa -b 4096 -C 'jo96cube@gmail.com'
+    id_rsa is private, the other one public.
+2. eval "$(ssh-agent -s)"
+3. ssh-add ~/.ssh/id_rsa
