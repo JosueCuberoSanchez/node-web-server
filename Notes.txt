@@ -3,3 +3,11 @@ To generate SSH keys:
     id_rsa is private, the other one public.
 2. eval "$(ssh-agent -s)"
 3. ssh-add ~/.ssh/id_rsa
+
+To deploy to Heroku
+1. heroku login
+2. heroku keys:add
+    heroku keys
+3. ssh -v git@heroku.com
+4. Set the env port
+5. Set start script
